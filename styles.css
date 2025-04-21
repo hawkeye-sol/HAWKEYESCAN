@@ -1,0 +1,18 @@
+
+body {
+  font-family: Arial, sans-serif;
+  color: white;
+  background-color: #000;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.coin-card {
+  background-color: #111;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
