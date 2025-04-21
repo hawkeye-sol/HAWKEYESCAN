@@ -1,150 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hawkeye Insights</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      color: white;
-      font-family: 'Orbitron', sans-serif;
-    }
-    .container {
-      text-align: center;
-      padding: 50px 20px;
-    }
-    .logo {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-    h1 {
-      font-size: 2.5rem;
-    }
-    p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      margin: 0 auto 30px;
-    }
-    .btn {
-      background: white;
-      color: black;
-      padding: 12px 24px;
-      margin: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .btn:hover {
-      background: #ccc;
-    }
-    #dashboard {
-      display: none;
-      margin-top: 40px;
-      background: #111;
-      padding: 20px;
-      border-radius: 12px;
-    }
-  </style>
+  <title>Hawkeye Coin Presale</title>
+  <link href="styles.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.js"></script>
+  <script defer src="wallet.js"></script>
 </head>
-<body>
+<body class="dark">
   <div class="container">
-    <img src="hawk_logo.png" alt="Hawkeye Logo" class="logo"/>
-    <h1>Hawkeye Coin Insights</h1>
-    <p>Unlock the power of MemeCoin intelligence. Premium access with Solana Pay — secure, instant, and decentralized.</p>
-    <div id="access">
-      <h2>Choose Access Plan</h2>
-      <button class="btn" onclick="pay('0.2', 1)">Day Pass – 0.2 SOL</button>
-      <button class="btn" onclick="pay('1', 30)">1 Month – 1 SOL</button>
-      <button class="btn" onclick="pay('1.5', 60)">2 Months – 1.5 SOL</button>
-      <button class="btn" onclick="pay('2', 90)">3 Months – 2 SOL</button>
-    </div>
-    <div id="dashboard">
-      <h2>Dashboard Unlocked</h2>
-      <p>Welcome to your premium dashboard! Enjoy exclusive insights and live data.</p>
+    <img src="logo.png" alt="Hawkeye Logo" class="logo"/>
+    <h1>Hawkeye Coin Presale</h1>
+    <p>Unlock access to exclusive MemeCoin insights – powered by Solana</p>
+    <div class="plans">
+      <button onclick="pay(0.2)">Day Access – 0.2 SOL</button>
+      <button onclick="pay(1)">1 Month – 1 SOL</button>
+      <button onclick="pay(1.5)">2 Months – 1.5 SOL</button>
+      <button onclick="pay(2)">3 Months – 2 SOL</button>
     </div>
   </div>
-
-  <script type="module">
-    import {
-      Connection,
-      PublicKey,
-      Transaction,
-      SystemProgram,
-      clusterApiUrl
-    } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.3/lib/index.iife.min.js";
-
-    const merchantWallet = '2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi';
-
-    async function connectWallet() {
-      try {
-        const resp = await window.solana.connect();
-        return resp.publicKey.toString();
-      } catch (err) {
-        alert("Wallet connection failed!");
-        return null;
-      }
-    }
-
-    async function pay(amountSol, accessDays) {
-      if (!window.solana || !window.solana.isPhantom) {
-        alert("Please install Phantom Wallet to continue.");
-        return;
-      }
-
-      const walletAddress = await connectWallet();
-      if (!walletAddress) return;
-
-      if (walletAddress === merchantWallet) {
-        grantAccess(999);
-        return;
-      }
-
-      const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
-      const fromPubkey = new PublicKey(walletAddress);
-      const toPubkey = new PublicKey(merchantWallet);
-      const lamports = parseFloat(amountSol) * 1e9;
-
-      let transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey,
-          toPubkey,
-          lamports,
-        })
-      );
-
-      transaction.feePayer = fromPubkey;
-      transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
-
-      try {
-        const signedTransaction = await window.solana.signTransaction(transaction);
-        const txid = await connection.sendRawTransaction(signedTransaction.serialize());
-        await connection.confirmTransaction(txid);
-
-        const expiry = new Date();
-        expiry.setDate(expiry.getDate() + accessDays);
-        localStorage.setItem("access_until", expiry.toISOString());
-        grantAccess(accessDays);
-      } catch (error) {
-        console.error(error);
-        alert("Transaction failed. Please try again.");
-      }
-    }
-
-    function grantAccess(days) {
-      document.getElementById("access").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-    }
-
-    const expiry = localStorage.getItem("access_until");
-    if (expiry && new Date(expiry) > new Date()) {
-      grantAccess();
-    }
-  </script>
 </body>
 </html>
