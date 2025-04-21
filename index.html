@@ -3,87 +3,124 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Hawkeye Coin Insights</title>
+  <title>Hawkeye Insights</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      background-color: #000;
-      color: #fff;
-      font-family: 'Arial', sans-serif;
-      padding: 20px;
+      background: black;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
     }
-    .center {
+    .container {
       text-align: center;
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 50px 20px;
     }
     .logo {
-      width: 120px;
+      width: 100px;
       margin-bottom: 20px;
     }
-    .unlock-btn {
+    h1 {
+      font-size: 2.5rem;
+    }
+    p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+    .btn {
       background: white;
       color: black;
-      border: none;
       padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
       font-size: 1rem;
       cursor: pointer;
-      margin: 10px;
-      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #ccc;
     }
     #dashboard {
       display: none;
-      margin-top: 30px;
-      padding: 20px;
+      margin-top: 40px;
       background: #111;
+      padding: 20px;
       border-radius: 12px;
     }
   </style>
 </head>
 <body>
-  <div class="center">
-    <img src="hawk_logo.png" class="logo" alt="Hawkeye Logo"/>
+  <div class="container">
+    <img src="hawk_logo.png" alt="Hawkeye Logo" class="logo"/>
     <h1>Hawkeye Coin Insights</h1>
-    <p>Track the hottest MemeCoins and get real-time insights before they go viral.</p>
-    <p>Powered by Solana. Unlock premium access to our MemeCoin dashboard.</p>
-
+    <p>Unlock the power of MemeCoin intelligence. Premium access with Solana Pay — secure, instant, and decentralized.</p>
     <div id="access">
-      <h2>Choose Your Access</h2>
-      <button class="unlock-btn" onclick="unlock('0.2', 1)">Day Access – 0.2 SOL</button>
-      <button class="unlock-btn" onclick="unlock('1', 30)">1 Month – 1 SOL</button>
-      <button class="unlock-btn" onclick="unlock('1.5', 60)">2 Months – 1.5 SOL</button>
-      <button class="unlock-btn" onclick="unlock('2', 90)">3 Months – 2 SOL</button>
+      <h2>Choose Access Plan</h2>
+      <button class="btn" onclick="pay('0.2', 1)">Day Pass – 0.2 SOL</button>
+      <button class="btn" onclick="pay('1', 30)">1 Month – 1 SOL</button>
+      <button class="btn" onclick="pay('1.5', 60)">2 Months – 1.5 SOL</button>
+      <button class="btn" onclick="pay('2', 90)">3 Months – 2 SOL</button>
     </div>
-
     <div id="dashboard">
-      <h2>Welcome to the MemeCoin Dashboard!</h2>
-      <p>[Live data + recommendations will be shown here]</p>
+      <h2>Dashboard Unlocked</h2>
+      <p>Here you'll see real-time MemeCoin data, charts, and AI-based recommendations.</p>
     </div>
   </div>
 
   <script type="module">
-    import { connect, sendTransaction } from './solana.js';
+    import { Connection, PublicKey, clusterApiUrl, Transaction, SystemProgram } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.3/lib/index.iife.min.js";
 
     const myWallet = '2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi';
 
-    async function unlock(amount, days) {
-      const pubkey = await connect();
-      if (!pubkey) return;
+    async function connectWallet() {
+      if (!window.solana || !window.solana.isPhantom) {
+        alert("Please install Phantom Wallet");
+        return null;
+      }
+      const resp = await window.solana.connect();
+      return resp.publicKey.toString();
+    }
 
-      if (pubkey === myWallet) {
-        grantAccess(9999);
+    async function pay(amountSol, days) {
+      const userWallet = await connectWallet();
+      if (!userWallet) return;
+
+      if (userWallet === myWallet) {
+        grantAccess(999);
         return;
       }
 
-      const success = await sendTransaction(amount, myWallet);
-      if (success) {
+      const connection = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
+      const fromPubkey = new PublicKey(userWallet);
+      const toPubkey = new PublicKey(myWallet);
+      const lamports = parseFloat(amountSol) * 1e9;
+
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey,
+          toPubkey,
+          lamports
+        })
+      );
+
+      transaction.feePayer = fromPubkey;
+      transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+
+      try {
+        const signed = await window.solana.signTransaction(transaction);
+        const sig = await connection.sendRawTransaction(signed.serialize());
+        await connection.confirmTransaction(sig);
+
         const expiry = new Date();
         expiry.setDate(expiry.getDate() + days);
         localStorage.setItem('access_until', expiry.toISOString());
         grantAccess(days);
-      } else {
-        alert('Payment failed or cancelled.');
+      } catch (e) {
+        console.error(e);
+        alert("Transaction failed or cancelled.");
       }
     }
 
@@ -92,12 +129,10 @@
       document.getElementById('dashboard').style.display = 'block';
     }
 
-    // Auto-unlock if still valid
-    const until = localStorage.getItem('access_until');
-    if (until && new Date(until) > new Date()) {
-      grantAccess(0);
+    const expiry = localStorage.getItem('access_until');
+    if (expiry && new Date(expiry) > new Date()) {
+      grantAccess();
     }
   </script>
-  <script src="solana.js" type="module"></script>
 </body>
 </html>
