@@ -66,43 +66,55 @@
     </div>
     <div id="dashboard">
       <h2>Dashboard Unlocked</h2>
-      <p>Here you'll see real-time MemeCoin data, charts, and AI-based recommendations.</p>
+      <p>Welcome to your premium dashboard! Enjoy exclusive insights and live data.</p>
     </div>
   </div>
 
   <script type="module">
-    import { Connection, PublicKey, clusterApiUrl, Transaction, SystemProgram } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.3/lib/index.iife.min.js";
+    import {
+      Connection,
+      PublicKey,
+      Transaction,
+      SystemProgram,
+      clusterApiUrl
+    } from "https://cdn.jsdelivr.net/npm/@solana/web3.js@1.73.3/lib/index.iife.min.js";
 
-    const myWallet = '2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi';
+    const merchantWallet = '2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi';
 
     async function connectWallet() {
-      if (!window.solana || !window.solana.isPhantom) {
-        alert("Please install Phantom Wallet");
+      try {
+        const resp = await window.solana.connect();
+        return resp.publicKey.toString();
+      } catch (err) {
+        alert("Wallet connection failed!");
         return null;
       }
-      const resp = await window.solana.connect();
-      return resp.publicKey.toString();
     }
 
-    async function pay(amountSol, days) {
-      const userWallet = await connectWallet();
-      if (!userWallet) return;
+    async function pay(amountSol, accessDays) {
+      if (!window.solana || !window.solana.isPhantom) {
+        alert("Please install Phantom Wallet to continue.");
+        return;
+      }
 
-      if (userWallet === myWallet) {
+      const walletAddress = await connectWallet();
+      if (!walletAddress) return;
+
+      if (walletAddress === merchantWallet) {
         grantAccess(999);
         return;
       }
 
-      const connection = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
-      const fromPubkey = new PublicKey(userWallet);
-      const toPubkey = new PublicKey(myWallet);
+      const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+      const fromPubkey = new PublicKey(walletAddress);
+      const toPubkey = new PublicKey(merchantWallet);
       const lamports = parseFloat(amountSol) * 1e9;
 
-      const transaction = new Transaction().add(
+      let transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey,
           toPubkey,
-          lamports
+          lamports,
         })
       );
 
@@ -110,26 +122,26 @@
       transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
       try {
-        const signed = await window.solana.signTransaction(transaction);
-        const sig = await connection.sendRawTransaction(signed.serialize());
-        await connection.confirmTransaction(sig);
+        const signedTransaction = await window.solana.signTransaction(transaction);
+        const txid = await connection.sendRawTransaction(signedTransaction.serialize());
+        await connection.confirmTransaction(txid);
 
         const expiry = new Date();
-        expiry.setDate(expiry.getDate() + days);
-        localStorage.setItem('access_until', expiry.toISOString());
-        grantAccess(days);
-      } catch (e) {
-        console.error(e);
-        alert("Transaction failed or cancelled.");
+        expiry.setDate(expiry.getDate() + accessDays);
+        localStorage.setItem("access_until", expiry.toISOString());
+        grantAccess(accessDays);
+      } catch (error) {
+        console.error(error);
+        alert("Transaction failed. Please try again.");
       }
     }
 
     function grantAccess(days) {
-      document.getElementById('access').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
+      document.getElementById("access").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
     }
 
-    const expiry = localStorage.getItem('access_until');
+    const expiry = localStorage.getItem("access_until");
     if (expiry && new Date(expiry) > new Date()) {
       grantAccess();
     }
