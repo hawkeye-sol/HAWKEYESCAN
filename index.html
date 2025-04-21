@@ -1,24 +1,24 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hawkeye Coin Presale</title>
-  <link href="styles.css" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.js"></script>
-  <script defer src="wallet.js"></script>
+    <meta charset="UTF-8">
+    <title>Hawkeye Coin - Presale</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script src="wallet.js"></script>
 </head>
-<body class="dark">
-  <div class="container">
-    <img src="logo.png" alt="Hawkeye Logo" class="logo"/>
-    <h1>Hawkeye Coin Presale</h1>
-    <p>Unlock access to exclusive MemeCoin insights – powered by Solana</p>
-    <div class="plans">
-      <button onclick="pay(0.2)">Day Access – 0.2 SOL</button>
-      <button onclick="pay(1)">1 Month – 1 SOL</button>
-      <button onclick="pay(1.5)">2 Months – 1.5 SOL</button>
-      <button onclick="pay(2)">3 Months – 2 SOL</button>
+<body>
+    <div class="container">
+        <img src="hawkeye-logo.png" alt="Hawkeye Logo" class="logo">
+        <h1>Welcome to Hawkeye Coin</h1>
+        <p>Access premium MemeCoin sniper tools powered by Solana.</p>
+        <div class="payment-options">
+            <button onclick="paySol(2)">3 Months - 2 SOL</button>
+            <button onclick="paySol(1.5)">2 Months - 1.5 SOL</button>
+            <button onclick="paySol(1)">1 Month - 1 SOL</button>
+            <button onclick="paySol(0.2)">1 Day - 0.2 SOL</button>
+        </div>
     </div>
-  </div>
 </body>
 </html>
