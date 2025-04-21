@@ -1,11 +1,103 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Hawkeye Coin Insights</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HawkScan WebApp</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+    }
+    .center {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+    .unlock-btn {
+      background: white;
+      color: black;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 10px;
+      border-radius: 8px;
+    }
+    #dashboard {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      background: #111;
+      border-radius: 12px;
+    }
+  </style>
 </head>
-<body style="margin:0; background-color:#000;">
-  <div id="root"></div>
+<body>
+  <div class="center">
+    <img src="hawk_logo.png" class="logo" alt="Hawkeye Logo"/>
+    <h1>Hawkeye Coin Insights</h1>
+    <p>Track the hottest MemeCoins and get real-time insights before they go viral.</p>
+    <p>Powered by Solana. Unlock premium access to our MemeCoin dashboard.</p>
+
+    <div id="access">
+      <h2>Choose Your Access</h2>
+      <button class="unlock-btn" onclick="unlock('0.2', 1)">Day Access – 0.2 SOL</button>
+      <button class="unlock-btn" onclick="unlock('1', 30)">1 Month – 1 SOL</button>
+      <button class="unlock-btn" onclick="unlock('1.5', 60)">2 Months – 1.5 SOL</button>
+      <button class="unlock-btn" onclick="unlock('2', 90)">3 Months – 2 SOL</button>
+    </div>
+
+    <div id="dashboard">
+      <h2>Welcome to the MemeCoin Dashboard!</h2>
+      <p>[Live data + recommendations will be shown here]</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { connect, sendTransaction } from './solana.js';
+
+    const myWallet = '2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi';
+
+    async function unlock(amount, days) {
+      const pubkey = await connect();
+      if (!pubkey) return;
+
+      if (pubkey === myWallet) {
+        grantAccess(9999);
+        return;
+      }
+
+      const success = await sendTransaction(amount, myWallet);
+      if (success) {
+        const expiry = new Date();
+        expiry.setDate(expiry.getDate() + days);
+        localStorage.setItem('access_until', expiry.toISOString());
+        grantAccess(days);
+      } else {
+        alert('Payment failed or cancelled.');
+      }
+    }
+
+    function grantAccess(days) {
+      document.getElementById('access').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+    }
+
+    // Auto-unlock if still valid
+    const until = localStorage.getItem('access_until');
+    if (until && new Date(until) > new Date()) {
+      grantAccess(0);
+    }
+  </script>
+  <script src="solana.js" type="module"></script>
 </body>
 </html>
