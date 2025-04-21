@@ -1,1 +1,72 @@
-<html><body><h1>Hawkeye Landing Page</h1></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hawkeye Coinscan - Presale Access</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .logo {
+            margin-bottom: 20px;
+        }
+        .pricing-option {
+            margin: 15px 0;
+        }
+        .payment-button {
+            background-color: #1e90ff;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px;
+        }
+        .faq-link {
+            margin-top: 30px;
+            display: block;
+            color: #00ffcc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="logo" src="hawkeye_logo.png" alt="Hawkeye Logo" width="100">
+        <h1>Hawkeye Coinscan</h1>
+        <p>Select your access level and pay directly with your Phantom Wallet</p>
+
+        <div class="pricing-option">
+            <strong>1 Day Access - 0.2 SOL</strong><br>
+            <button class="payment-button" onclick="window.location.href='https://phantom.app/ul/buy?recipient=2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi&amount=0.2&token=SOL'">Pay 0.2 SOL</button>
+        </div>
+        <div class="pricing-option">
+            <strong>1 Month Access - 1 SOL</strong><br>
+            <button class="payment-button" onclick="window.location.href='https://phantom.app/ul/buy?recipient=2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi&amount=1&token=SOL'">Pay 1 SOL</button>
+        </div>
+        <div class="pricing-option">
+            <strong>2 Months Access - 1.5 SOL</strong><br>
+            <button class="payment-button" onclick="window.location.href='https://phantom.app/ul/buy?recipient=2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi&amount=1.5&token=SOL'">Pay 1.5 SOL</button>
+        </div>
+        <div class="pricing-option">
+            <strong>3 Months Access - 2 SOL</strong><br>
+            <button class="payment-button" onclick="window.location.href='https://phantom.app/ul/buy?recipient=2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi&amount=2&token=SOL'">Pay 2 SOL</button>
+        </div>
+
+        <a href="faq.html" class="faq-link">Read the FAQ</a>
+    </div>
+</body>
+</html>
