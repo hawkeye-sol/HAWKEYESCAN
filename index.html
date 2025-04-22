@@ -1,22 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Hawkeye Coinscan</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hawkeye | Memecoin Sniper</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="wallet.js" defer></script>
 </head>
-<body style="background-color:black; color:white; font-family:sans-serif; text-align:center; padding:40px;">
-    <img src="logo.png" alt="Hawkeye Logo" style="width:150px;"><br>
-    <h1>Hawkeye Coinscan</h1>
-    <p>Access this powerful memecoin sniper tool directly with your Phantom Wallet.</p>
-    <h2>Choose Your Access:</h2>
-    <button>1 Day Access - 0.2 SOL</button>
-    <button>1 Month Access - 1 SOL</button>
-    <button>2 Months Access - 1.5 SOL</button>
-    <button>3 Months Access - 2 SOL</button>
-    <br><br>
-    <a href="demo.html"><button>Try Demo</button></a>
-    <br><br>
-    <img src="faq.png" alt="FAQ" style="width:100%; max-width:600px;">
+<body>
+  <div class="landing-container">
+    <header>
+      <img src="hawkeye_logo.png" alt="Hawkeye Logo" class="logo" />
+      <h1>Welcome to Hawkeye</h1>
+      <p>The ultimate memecoin sniping tool powered by Solana</p>
+    </header>
+
+    <section class="pricing">
+      <h2>Choose your access plan</h2>
+      <div class="plans">
+        <button onclick="pay(0.2, '1day')">1 Day – 0.2 SOL</button>
+        <button onclick="pay(1, '1month')">1 Month – 1 SOL</button>
+        <button onclick="pay(1.5, '2months')">2 Months – 1.5 SOL</button>
+        <button onclick="pay(2, '3months')">3 Months – 2 SOL</button>
+      </div>
+      <div class="demo">
+        <p>Want to try first?</p>
+        <a href="demo.html" class="demo-btn">Launch Demo Mode</a>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 Hawkeye. All rights reserved.</p>
+    </footer>
+  </div>
 </body>
 </html>
