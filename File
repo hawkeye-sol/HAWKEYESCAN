@@ -1,0 +1,22 @@
+hawkeye-app/
+│
+├── public/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   └── main.js
+│   └── images/
+│       └── logo.png
+│
+├── views/
+│   ├── index.html          <-- Landing Page
+│   ├── dashboard.html      <-- Main Dashboard
+│   ├── demo.html           <-- Demo Dashboard
+│   └── faq.html            <-- FAQ Section
+│
+├── server/
+│   └── app.js              <-- Express Backend
+│
+├── .gitignore
+├── package.json
+└── README.md
