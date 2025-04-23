@@ -1,0 +1,1 @@
+// API configuration for coin data
