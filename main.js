@@ -14,12 +14,7 @@ async function pay(months) {
         const transaction = new solanaWeb3.Transaction();
         const receiver = new solanaWeb3.PublicKey("2ymfWmDGtvqpTWhHFn2pxhDiTLpStphVFaJDnwjSMTsi");
 
-        let lamports = 0;
-        if (months === '1') {
-            lamports = 0.25 * solanaWeb3.LAMPORTS_PER_SOL;
-        } else {
-            lamports = 0.5 * solanaWeb3.LAMPORTS_PER_SOL;
-        }
+        let lamports = 0.3 * solanaWeb3.LAMPORTS_PER_SOL;  // 0.3 SOL
 
         const instruction = solanaWeb3.SystemProgram.transfer({
             fromPubkey: publicKey,
@@ -36,6 +31,7 @@ async function pay(months) {
         const signature = await connection.sendRawTransaction(signed.serialize());
         await connection.confirmTransaction(signature);
 
+        // Nach Zahlung weiterleiten
         window.location.href = "info.html";
     } catch (err) {
         console.error("Transaction Failed: ", err);
