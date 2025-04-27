@@ -1,17 +1,4 @@
 
-async function autoConnect() {
-    if (window.solana && window.solana.isPhantom) {
-        try {
-            await window.solana.connect({ onlyIfTrusted: false });
-            console.log("Wallet connected automatically.");
-        } catch (err) {
-            console.error("Auto-connection failed:", err);
-        }
-    } else {
-        alert("Phantom Wallet not found. Please install it.");
-    }
-}
-
 async function pay(months) {
     if (!window.solana || !window.solana.isPhantom) {
         alert("Phantom Wallet not found! Please install it.");
@@ -21,6 +8,7 @@ async function pay(months) {
     try {
         const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
         const provider = window.solana;
+        await provider.connect();
 
         const publicKey = provider.publicKey;
         const transaction = new solanaWeb3.Transaction();
@@ -48,7 +36,6 @@ async function pay(months) {
         const signature = await connection.sendRawTransaction(signed.serialize());
         await connection.confirmTransaction(signature);
 
-        // Nach Zahlung weiterleiten
         window.location.href = "info.html";
     } catch (err) {
         console.error("Transaction Failed: ", err);
