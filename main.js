@@ -31,7 +31,6 @@ async function pay(months) {
         const signature = await connection.sendRawTransaction(signed.serialize());
         await connection.confirmTransaction(signature);
 
-        // Nach Zahlung weiterleiten
         window.location.href = "info.html";
     } catch (err) {
         console.error("Transaction Failed: ", err);
